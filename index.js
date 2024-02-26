@@ -2,8 +2,15 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 const PORT = process.env.PORT || 3000;
+const cors = require("cors");
 
 app.use(express.json());
+app.use(
+  cors({
+    credentials: true,
+    origin: ["*"],
+  })
+);
 
 const jsonFilePath = "data.json";
 
