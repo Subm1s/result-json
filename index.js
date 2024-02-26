@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: ["*"],
+    origin: ["*","http://127.0.0.1:5500","https://puff.transforms5in1.com/","https://puff.transform5in1.com/"],
   })
 );
 
