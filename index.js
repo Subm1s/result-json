@@ -8,7 +8,12 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: ["*","http://127.0.0.1:5500","https://puff.transforms5in1.com/","https://puff.transform5in1.com/"],
+    origin: [
+      "*",
+      "http://127.0.0.1:5500",
+      "https://puff.transforms5in1.com/",
+      "https://puff.transform5in1.com/",
+    ],
   })
 );
 
@@ -16,6 +21,7 @@ const jsonFilePath = "data.json";
 
 app.post("/data", (req, res) => {
   const { name, number } = req.body;
+  console.log(name, number);
 
   if (!name || !number) {
     return res.status(400).json({ error: "Не вказано name або number" });
@@ -28,13 +34,12 @@ app.post("/data", (req, res) => {
       key !==
       "patP6Gw1aoFHV1y3f.e878cffcfd183dfd47236004d50e7b421c1621584ebf19482a20ecdcc1073d3c"
     ) {
-      res
-        .status(409)
-        .json({ message: "Недостатньо прав для запису інформації" });
+      return res.status(409).json({ message: "Недостатньо прав для запису інформації" });
     }
     data = JSON.parse(fs.readFileSync(jsonFilePath));
   } catch (error) {
     console.error("Помилка при читанні файлу:", error);
+    return res.status(500).json({ error: "Помилка при читанні файлу" });
   }
 
   data.push({ name, number });
@@ -45,7 +50,7 @@ app.post("/data", (req, res) => {
       return res.status(500).json({ error: "Помилка при записі у файл" });
     }
     console.log("Дані успішно записано у файл.");
-    res.status(200).json({ success: true });
+    return res.status(200).json({ success: true });
   });
 });
 
@@ -57,17 +62,16 @@ app.get("/data", (req, res) => {
       "patP6Gw1aoFHV1y3f.e878cffcfd183dfd47236004d50e7b421c1621584ebf19482a20ecdcc1073d3c"
     ) {
       const data = JSON.parse(fs.readFileSync(jsonFilePath));
-      res.json(data);
+      return res.json(data);
     } else {
-      res
-        .status(409)
-        .json({ message: "Недостатньо прав для отримання інформації" });
+      return res.status(409).json({ message: "Недостатньо прав для отримання інформації" });
     }
   } catch (error) {
     console.error("Помилка при читанні файлу:", error);
-    res.status(500).json({ error: "Помилка при читанні файлу" });
+    return res.status(500).json({ error: "Помилка при читанні файлу" });
   }
 });
+
 
 app.listen(PORT, () => {
   console.log(`Сервер запущено на порті ${PORT}`);
